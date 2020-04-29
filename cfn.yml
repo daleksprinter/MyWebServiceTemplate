@@ -316,6 +316,22 @@ Resources:
   ArtifactBucket:
     Type: AWS::S3::Bucket
 
+  PipelineWebhook:
+    Type: "AWS::CodePipeline::Webhook"
+    Properties:
+      Authentication: GITHUB_HMAC
+      AuthenticationConfiguration:
+        SecretToken: 'github-secret'
+      Filters:
+        - JsonPath: "$.ref"
+          MatchEquals: 'refs/heads/master'
+      TargetPipeline: !Ref Pipeline
+      TargetAction: SourceAction
+      Name: GitHubPipelineWebhook
+      TargetPipelineVersion: !GetAtt Pipeline.Version
+      RegisterWithThirdParty: "true"
+
+
 
  # CodeBuild
   CodeBuildProject:
